@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+</body>
+<!--<script src="../underscore-1.8.3-analysis.js"></script>-->
+<script src="underscore.js"></script>
+<script>
+    function testFunction() {
+        console.log(_.isFunction(testFunction))//true
+        console.log(_.isFunction({}))//false
+    }
+
+    //    testFunction()
+
+    function testFunctions() {
+        var obj = {
+            world: function () {
+                console.log('world')
+            },
+            GNU: 'GNU is Not Unix',
+            hello: function () {
+                console.log('hello')
+            }
+        }
+        console.log(_.functions(obj))//['hello','world']
+    }
+
+    //    testFunctions()
+
+
+    function testNumber() {
+        _.isNaN(55)
+    }
+
+    //    testNumber()
+
+    function testContains() {
+        var arr = [2, 6, 5, 8, 9]
+        console.log(_.contains(arr, 6))//true
+        console.log(_.contains(arr, 6, 2))//false
+    }
+
+    //    testContains()
+
+    function testEach() {
+//       对象调用时(value, key, list)
+        function myConsoleLog(element, idx, list) {
+            console.log(idx + ":" + element)
+            console.log('this:', this)
+            console.log(list)
+            console.log("***************")
+        }
+
+        console.log('参数是数组')
+        _.each(['hello', 'world', 'hahaha'], myConsoleLog, {foo: 'I am context'})
+        console.log('参数是对象')
+        _.each({key1: 'hello', key2: 'git'}, myConsoleLog, {foo: 'I am context'})
+        //集合函数能在数组，对象，和类数组对象，比如arguments, NodeList和类似的数据类型上正常工作。 但是它通过鸭子类型工作，所以要避免传递带有一个数值类型 length 属性的对象。
+    }
+
+    //    testEach()
+
+    function testKey() {
+        var obj = {
+            toString: function () {
+                console.log('Maybe there is a bug in IE9-')
+            },
+            hello: 'world'
+        }
+        console.log(_.keys(obj))
+    }
+
+    //    testKey()
+
+
+    function testFindIndex() {
+        var array = [2, 3, 4, 5, 4],
+            firstIdx = _.findIndex(array, function (item) {
+                console.log(this)//[2, 3, 4, 5, 4]
+                return item === 4
+            }, array),
+            lastIdx = _.findLastIndex(array, function (item) {
+                console.log(this)//[2, 3, 4, 5, 4]
+                return item === 4
+            }, array)
+        console.log('firstIdx:',firstIdx)//2
+        console.log('lastIdx:',lastIdx)//4
+    }
+    testFindIndex()
+
+
+</script>
+</html>
