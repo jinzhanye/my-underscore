@@ -6,8 +6,8 @@
 </head>
 <body>
 </body>
-<!--<script src="../underscore-1.8.3-analysis.js"></script>-->
-<script src="underscore.js"></script>
+<script src="../underscore-1.8.3-analysis.js"></script>
+<!--<script src="underscore.js"></script>-->
 <script>
     function testFunction() {
         console.log(_.isFunction(testFunction))//true
@@ -87,11 +87,37 @@
                 console.log(this)//[2, 3, 4, 5, 4]
                 return item === 4
             }, array)
-        console.log('firstIdx:',firstIdx)//2
-        console.log('lastIdx:',lastIdx)//4
+        console.log('firstIdx:', firstIdx)//2
+        console.log('lastIdx:', lastIdx)//4
     }
-    testFindIndex()
 
+    //    testFindIndex()
+
+
+//    function testMatcher() {
+//        var ready = _.matcher({selected: true, visible: true});
+//        debugger
+//    }
+//    testMatcher()
+
+    function testSortedIndex() {
+        var array = [3, 4, 5, 6, 7, 8, 9]
+//        console.log(_.sortedIndex(array, 8))//5
+
+        var stooges = [{name: 'moe', age: 40}, {name: 'curly', age: 60}];
+        console.log(_.sortedIndex(stooges, {name: 'larry', age: 50}, 'age'))//1
+    }
+
+//    testSortedIndex()
+
+    function testIndexOf() {
+        var array = [2, 3, 4, 5, 4],
+            array2 = [3, 4, 5, 6, 7, 8, 9]
+        console.log(_.indexOf(array, 4))//2
+        console.log(_.indexOf(array2, 4, true))//1, true表示启用二分搜索
+    }
+
+//    testIndexOf()
 
 </script>
 </html>

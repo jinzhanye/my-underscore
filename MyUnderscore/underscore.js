@@ -7,13 +7,13 @@
     var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
 
     var
-        slice            = ArrayProto.slice,
-        toString         = ObjProto.toString,
-        hasOwnProperty   = ObjProto.hasOwnProperty;
+        slice = ArrayProto.slice,
+        toString = ObjProto.toString,
+        hasOwnProperty = ObjProto.hasOwnProperty;
 
 
     var
-        nativeKeys         = Object.keys
+        nativeKeys = Object.keys
 
 
     var _ = function (obj) {
@@ -34,30 +34,34 @@
     _.VERSION = '1.8.3';
 
     //optimizeCb => optimizeCallback
-    var optimizeCb = function(func, context, argCount) {
+    var optimizeCb = function (func, context, argCount) {
         // 如果没有指定 this 指向，则返回原函数
         if (context === void 0)
             return func;
 
         switch (argCount == null ? 3 : argCount) {
-            case 1: return function(value) {
-                return func.call(context, value);
-            };
-            case 2: return function(value, other) {
-                return func.call(context, value, other);
-            };
+            case 1:
+                return function (value) {
+                    return func.call(context, value);
+                };
+            case 2:
+                return function (value, other) {
+                    return func.call(context, value, other);
+                };
 
             // 如果有指定 this，但没有传入 argCount 参数
             // 则执行以下 case
             // _.each、_.map、_.findIndex传了context参数时
-            case 3: return function(value, index, collection) {
-                return func.call(context, value, index, collection);
-            };
+            case 3:
+                return function (value, index, collection) {
+                    return func.call(context, value, index, collection);
+                };
 
             // _.reduce、_.reduceRight
-            case 4: return function(accumulator, value, index, collection) {
-                return func.call(context, accumulator, value, index, collection);
-            };
+            case 4:
+                return function (accumulator, value, index, collection) {
+                    return func.call(context, accumulator, value, index, collection);
+                };
         }
 
         // 其实不用上面的 switch-case 语句
@@ -68,7 +72,7 @@
         // https://segmentfault.com/q/1010000007894513
         // http://www.ecma-international.org/ecma-262/5.1/#sec-15.3.4.3
         // http://www.ecma-international.org/ecma-262/5.1/#sec-15.3.4.4
-        return function() {
+        return function () {
             return func.apply(context, arguments);
         };
     };
@@ -155,7 +159,7 @@
      * @param obj
      * @returns {array}
      */
-    _.keys = function(obj) {
+    _.keys = function (obj) {
         // 容错
         // 如果传入的参数不是对象，则返回空数组
         if (!_.isObject(obj)) return [];
@@ -188,9 +192,9 @@
      * @type {methods}
      */
     _.functions = _.methods = function (obj) {
-        var names =[]
-        for(var key in obj){
-            if(_.isFunction(obj[key])) names.push(key)
+        var names = []
+        for (var key in obj) {
+            if (_.isFunction(obj[key])) names.push(key)
         }
         return names.sort()
     }
@@ -201,8 +205,8 @@
      * @param key
      * @returns {boolean|*}
      */
-    _.has = function (obj,key) {
-        return obj != null && hasOwnProperty.call(obj,key)
+    _.has = function (obj, key) {
+        return obj != null && hasOwnProperty.call(obj, key)
     }
 
     _.mixin = function (obj) {
@@ -227,21 +231,29 @@
     }
 
     //暂时不清楚guard是用来干嘛的，代码中只要guard不为false就设fromIndex为0
-    _.contains = _.includes = _.include = function (obj,item,fromIndex,guard) {
+    _.contains = _.includes = _.include = function (obj, item, fromIndex, guard) {
         if (!isArrayLike(obj)) obj = _.values(obj);
-        if(typeof fromIndex != 'number' || guard) fromIndex = 0
+        if (typeof fromIndex != 'number' || guard) fromIndex = 0
         return _.indexOf(obj, item, fromIndex) >= 0;
     }
 
-    _.identity = function(value) {
+    _.identity = function (value) {
         return value;
     };
-    _.isObject = function(obj) {
+    _.isObject = function (obj) {
         var type = typeof obj;
         return type === 'function' || type === 'object' && !!obj;
     };
 
-    var cb = function(value, context, argCount) {
+    /**
+     *  根据传进来的参数返回一个callback函数
+     *
+     * @param value
+     * @param context
+     * @param argCount
+     * @returns {*}
+     */
+    var cb = function (value, context, argCount) {
         if (value == null) return _.identity;
         if (_.isFunction(value)) return optimizeCb(value, context, argCount);
         if (_.isObject(value)) return _.matcher(value);
@@ -253,7 +265,7 @@
         // _.indexOf(array, value, [isSorted])
         // _.indexOf(array, value, [fromIndex])
         // _.lastIndexOf(array, value, [fromIndex])
-        return function(array, item, idx) {
+        return function (array, item, idx) {
             var i = 0, length = getLength(array);
 
             // 如果 idx 为 Number 类型
@@ -305,7 +317,7 @@
 
     function createPredicateIndexFinder(dir) {
         // 经典闭包
-        return function(array, predicate, context) {
+        return function (array, predicate, context) {
             predicate = cb(predicate, context);
 
             var length = getLength(array);
@@ -323,12 +335,13 @@
             return -1;
         };
     }
-    var createAssigner = function(keysFunc, undefinedOnly) {
+
+    var createAssigner = function (keysFunc, undefinedOnly) {
         // 返回函数
         // 经典闭包（undefinedOnly 参数在返回的函数中被引用）
         // 返回的函数参数个数 >= 1
         // 将第二个开始的对象参数的键值对 "继承" 给第一个参数
-        return function(obj) {
+        return function (obj) {
             var length = arguments.length;
             // 只传入了一个参数（或者 0 个？）
             // 或者传入的第一个参数是 null
@@ -370,15 +383,43 @@
 
     _.findIndex = createPredicateIndexFinder(1);
     _.findLastIndex = createPredicateIndexFinder(-1);
+
+    _.sortedIndex = function (array, obj, iteratee, context) {
+        iteratee = cb(iteratee, context, 1)
+        //对于这种没有传iteratee的情况 _.sortedIndex([10, 20, 30, 40, 50], 35);
+        //cb返回_.identity作为iteratee
+
+        // 对于这种情况
+        // var stooges = [{name: 'moe', age: 40}, {name: 'curly', age: 60}];
+        // console.log(_.sortedIndex(stooges, {name: 'larry', age: 50}, 'age'))//1
+        //cb返回_.property('age')执行后的函数作为iteratee，用来获取对象的age值
+        iteratee = cb(iteratee, context, 1)
+        var value = iteratee(obj)
+
+        var low = 0, high = getLength(array)
+
+        //二分搜索
+        while (low < high) {
+            //floor有youngest 最小的意思，向下取整
+            var mid = Math.floor((low + high) / 2)
+            if(iteratee(array[mid]) < value)
+                low = mid + 1
+            else
+                high = mid
+        }
+
+        return low
+    }
+
     _.extendOwn = _.assign = createAssigner(_.keys);
 
     _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
 
-    _.isNaN = function(obj) {
+    _.isNaN = function (obj) {
         return _.isNumber(obj) && obj !== +obj;
     };
 
-    _.isMatch = function(object, attrs) {
+    _.isMatch = function (object, attrs) {
         // 提取 attrs 对象的所有 keys
         var keys = _.keys(attrs), length = keys.length;
 
@@ -404,9 +445,9 @@
 
     _.property = property;
 
-    _.matcher = _.matches = function(attrs) {
+    _.matcher = _.matches = function (attrs) {
         attrs = _.extendOwn({}, attrs);
-        return function(obj) {
+        return function (obj) {
             return _.isMatch(obj, attrs);
         };
     };
@@ -419,8 +460,8 @@
 
     // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
     // 其他类型判断
-    _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
-        _['is' + name] = function(obj) {
+    _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function (name) {
+        _['is' + name] = function (obj) {
             return toString.call(obj) === '[object ' + name + ']';
         };
     });
@@ -428,7 +469,7 @@
     //typeof /./ 判断正则是不是函数
     if (typeof /./ != 'function' && typeof Int8Array != 'object') {
         //上面_.each(['Arguments', 'Function',.... 已经声音过isFunction，这里有可能覆盖上面的声名
-        _.isFunction = function(obj) {
+        _.isFunction = function (obj) {
             return typeof obj == 'function' || false;
         };
     }
@@ -440,5 +481,8 @@
 //1._.functions
 //has
 //values
+//keys
+//findIndex
+//findLastIndex
 //2._.each
 //3.
