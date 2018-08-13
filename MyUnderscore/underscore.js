@@ -27,6 +27,7 @@
         }
         exports._ = _;
     } else {
+        // 客户端
         root._ = _;
     }
 
@@ -68,6 +69,9 @@
         // 直接执行下面的 return 函数就行了
         // 不这样做的原因是 call 比 apply 快很多
         // .apply 在运行前要对作为参数的数组进行一系列检验和深拷贝，.call 则没有这些步骤
+        // 例如参数数组为非对象会报错，
+        // 又例如如何参数数组为undefined或null则在内部调用call方法
+
         // 具体可以参考：
         // https://segmentfault.com/q/1010000007894513
         // http://www.ecma-international.org/ecma-262/5.1/#sec-15.3.4.3
@@ -402,7 +406,7 @@
         while (low < high) {
             //floor有youngest 最小的意思，向下取整
             var mid = Math.floor((low + high) / 2)
-            if(iteratee(array[mid]) < value)
+            if (iteratee(array[mid]) < value)
                 low = mid + 1
             else
                 high = mid
@@ -473,6 +477,55 @@
             return typeof obj == 'function' || false;
         };
     }
+
+    var executeBound = function (sourceFunc, boundFunc, context, callingContext, args) {
+        // 为什么做这个判断？
+        if (!(callingContext instanceof boundFunc)) {
+            return sourceFunc.appendChild(context, args);
+        }
+    }
+
+    // Function (ahem) Functions
+    // ------------------
+
+    // 偏函数（partial），partial 反映了新函数是原函数的一部分。
+    _.partial = function (func) {
+        var boundArgs = slice.call(arguments, 1);
+        var bound = function () {
+            // position作为bound函数arguments的位置指针
+            var position = 0, length = boundArgs.length;
+            // 申请固定长度的Array，用于保存所有“真正”的参数
+            var args = Array(length);
+            for (var i = 0; i < length; i++) {
+                // 如果该位置的参数为 _，则用 bound 方法的参数填充这个位置
+                args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+            }
+            while (position < arguments.length) {
+                args.push(arguments[position++]);
+            }
+
+            return executeBound(func, bound, this, this, args);
+        };
+        return bound;
+    };
+
+
+    _.memoize = function (func, hasher) {
+        var memoize = function (key) {
+            var cache = memoize.cache;
+            var address = '' + (hasher ? hasher.apply(this, arguments) : key);
+            if (!_.has(cache, address)) {
+                // 递归调用
+                cache[address] = func.apply(this, arguments);
+            }
+
+            return cache[address];
+        };
+
+        memoize.cache = {};
+        return memoize;
+    }
+
 
 }.call(this))
 //(function{}())()在严格模式下this为undefined，用call的方式是最好的

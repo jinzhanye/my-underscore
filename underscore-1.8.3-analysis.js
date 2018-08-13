@@ -1428,7 +1428,6 @@
     // 提取希望 pre-fill 的参数
     // 如果传入的是 _，则这个位置的参数暂时空着，等待手动填入
     var boundArgs = slice.call(arguments, 1);
-
     var bound = function() {
       var position = 0, length = boundArgs.length;
       var args = Array(length);
@@ -1485,6 +1484,7 @@
   // if true, return output stored in hash
   _.memoize = function(func, hasher) {
     var memoize = function(key) {
+      debugger
       // 储存变量，方便使用
       var cache = memoize.cache;
 

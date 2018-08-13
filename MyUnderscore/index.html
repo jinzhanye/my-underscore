@@ -94,11 +94,11 @@
     //    testFindIndex()
 
 
-//    function testMatcher() {
-//        var ready = _.matcher({selected: true, visible: true});
-//        debugger
-//    }
-//    testMatcher()
+    //    function testMatcher() {
+    //        var ready = _.matcher({selected: true, visible: true});
+    //        debugger
+    //    }
+    //    testMatcher()
 
     function testSortedIndex() {
         var array = [3, 4, 5, 6, 7, 8, 9]
@@ -108,7 +108,7 @@
         console.log(_.sortedIndex(stooges, {name: 'larry', age: 50}, 'age'))//1
     }
 
-//    testSortedIndex()
+    //    testSortedIndex()
 
     function testIndexOf() {
         var array = [2, 3, 4, 5, 4],
@@ -117,7 +117,30 @@
         console.log(_.indexOf(array2, 4, true))//1, true表示启用二分搜索
     }
 
-//    testIndexOf()
+    //    testIndexOf()
 
+    function testPartial() {
+        function substract(a, b) {
+            return b - a;
+        }
+
+        var subFrom20 = _.partial(substract, _, 20);
+        console.log(subFrom20(5));
+    }
+
+//    testPartial()
+
+
+    function testMemoize() {
+        var fibonacci = _.memoize(function (n) {
+            return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        });
+
+        console.time("使用缓存优化的fibonacci");
+        console.log(fibonacci(3));
+        console.timeEnd("使用缓存优化的fibonacci");
+    }
+
+    testMemoize();
 </script>
 </html>

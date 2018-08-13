@@ -13,5 +13,14 @@
     (function () {
         console.log(this)
     })()
+
+    function hello(a,b,c) {
+        console.log(a,b,c)
+        console.log(this)
+    }
+
+//    hello.apply([1,2,3],null)
+//    hello.apply([1,2,3],undefined)
+    hello.call([1,2,3],undefined)
 </script>
 </html>
